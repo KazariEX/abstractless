@@ -16,14 +16,12 @@
         tianliKey: () => props.tianliKey
     });
 
-    onMounted(async () => {
-        if (props.defer) {
-            await until(() => props.waitFor).toBeTruthy();
-        }
+    !props.defer && onMounted(async () => {
+        await until(() => props.waitFor).toBeTruthy();
         fetchAbstract();
     });
 </script>
 
 <template>
-    <slot :error="error" :pending="pending" :summary="summary"></slot>
+    <slot :error="error" :pending="pending" :summary="summary" :fetchAbstract="fetchAbstract"></slot>
 </template>
