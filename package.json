@@ -1,5 +1,5 @@
 {
-	"name": "abstractless",
+  "name": "abstractless",
   "author": "KazariEX",
   "description": "A headless component designed for creating customized Post-Abstract-AI in Vue.",
   "keywords": [
@@ -9,7 +9,7 @@
     "ai",
     "vue"
   ],
-	"version": "0.0.1",
+  "version": "0.0.1",
   "license": "MIT",
   "homepage": "https://github.com/KazariEX/abstractless",
   "repository": {
@@ -28,17 +28,19 @@
     "package.json",
     "README.md"
   ],
-	"scripts": {
-		"build": "vite build",
-		"watch": "vite build -w"
-	},
-	"dependencies": {
-		"@vueuse/core": "^10.9.0"
-	},
-	"devDependencies": {
-		"@vitejs/plugin-vue": "^5.0.4",
-		"vite": "^5.2.6",
-		"vite-plugin-dts": "^3.7.3",
-		"vue": "^3.4.21"
-	}
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build -w"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.9.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@zinkawaii/stylelint-config": "^0.1.1",
+    "stylelint": "^16.3.1",
+    "vite": "^5.2.6",
+    "vite-plugin-dts": "^3.7.3",
+    "vue": "^3.4.21"
+  }
 }
