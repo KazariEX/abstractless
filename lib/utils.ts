@@ -13,31 +13,33 @@ export function useAbstract(options: AbstractOptions) {
 
         let text = content;
         if (!content && target) {
-        const container = (typeof target === "string") ? document.querySelector(target) : target;
-        if (!container) return "";
+            const container = (typeof target === "string") ? document.querySelector(target) : target;
+            if (!container) return "";
 
-        const title = document.title;
+            const title = document.title;
             const headings = container.querySelectorAll("h1, h2, h3, h4, h5");
             const paragraphs = container.querySelectorAll("p");
 
-        for (const h of headings) {
-            text += h.textContent + " ";
-        }
+            for (const h of headings) {
+                text += h.textContent + " ";
+            }
 
-        for (const p of paragraphs) {
-            text += p.textContent.replaceAll(/https?:\/\/[^\s]+/g, "");
-        }
+            for (const p of paragraphs) {
+                text += p.textContent.replaceAll(/https?:\/\/[^\s]+/g, "");
+            }
             text = title + " " + text;
         }
         return text.slice(0, wordLimit);
     }
 
     async function fetchAbstract() {
-        const timeout = toValue(options.timeout) ?? 20000;
-        const tianliKey = toValue(options.tianliKey);
-
         try {
+            //开始处理
+            error.value = null;
             pending.value = true;
+
+            const timeout = toValue(options.timeout) ?? 20000;
+            const tianliKey = toValue(options.tianliKey);
 
             const content = buildContent();
             if (content.length === 0) {
@@ -62,12 +64,34 @@ export function useAbstract(options: AbstractOptions) {
             if (res.ok) {
                 summary.value = data.summary;
             }
-            else throw data;
+            else {
+                const unknown = "未知错误，请检查 API 文档";
+                const info =
+                    (res.status === 514) ?
+                        "TianliGPT is only available in mainland China, and is not yet open to overseas users, so stay tuned!" :
+                    (res.status === 403) ?
+                    {
+                        1: "你的网站设置了 Referrer-Policy 为 same-origin，这会导致 Tianli 无法验证你的请求来源。TianliGPT 依赖 refer 进行来源判断，特别是 meta 标签的 referrer 属性需要修改，至少为 origin（例如：<meta name=\"referrer\" content=\"origin\">）",
+                        2: "你正在使用的 tianli-key 已经被其他网站绑定或不存在，请检查当前网站地址是否在 summary.zhheo.com 中已绑定",
+                        3: "参数缺失，请检查是否正确配置 tianli-key",
+                        4: "tianli-key 错误或余额不足，请充值后请求新的文章",
+                        5: data.err_msg,
+                        6: data.err_msg,
+                        7: data.err_msg
+                    }[data.err_code] ?? unknown : unknown;
+
+                throw new Error(info);
+            }
         }
         catch (err) {
             error.value = err;
+
+            console.error("TianliGPT:", {
+                AbortError: "获取文章摘要超时。当你出现这个问题时，可能是 tianli-key 或者绑定的域名不正确，也可能是因为文章过长导致的 AI 运算量过大，您可以稍等一下然后刷新页面重试"
+            }[err.name] ?? err.message);
         }
         finally {
+            //结束处理
             pending.value = false;
         }
     }
