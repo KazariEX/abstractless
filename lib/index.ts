@@ -1,8 +1,9 @@
-import AbstractLess from "./index.vue";
-import { useAbstract } from "./utils";
+import AbstractLess from "./components/abstract-less.vue";
+import AbstractMore from "./components/abstract-more.vue";
 
-export type { AbstractOptions, AbstractProps } from "./types";
+export * from "./types";
+export * from "./utils";
 export {
     AbstractLess as default,
-    useAbstract
+    AbstractMore
 }

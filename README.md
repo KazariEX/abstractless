@@ -31,33 +31,62 @@ const abstractOptions = { /* 一些配置 */ };
 const { error, pending, summary, fetchAbstract } = useAbstract(abstractOptions);
 ```
 
-## 配置
+你也可以直接使用包里封装好的简易组件：
 
-### target
+```vue
+<script lang="ts" setup>
+    import { AbstractMore } from "abstractless";
 
-- **Type**: ``HTMLElement | string``
+    const abstractProps = { /* 一些配置 */ };
+</script>
+
+<template>
+    <AbstractMore v-bind="abstractProps"/>
+</template>
+```
+
+## API
+
+### useAbstract
+
+向 TianliGPT 发送请求，返回摘要。
+
+```ts
+export declare function useAbstract(options?: UseAbstractOptions): {
+    error: Ref<Error>,
+    pending: Ref<boolean>,
+    summary: Ref<string>,
+    fetchAbstract: () => void
+}
+```
+
+#### UseAbstractOptions
+
+**target**
+
+- **Type**: ``MaybeRefOrGetter<HTMLElement | string>``
 
 - **Default**: ``null``
 
 文章容器元素或其 CSS 选择器。
 
-### content
+**content**
 
-- **Type**: ``string``
+- **Type**: ``MaybeRefOrGetter<string>``
 
 - **Default**: ``null``
 
 文章内容，优先于 ``target`` 属性生效。
 
-### timeout
+**waitFor**
 
-- **Type**: ``number``
+- **Type**: ``MaybeRefOrGetter<boolean>``
 
-- **Default**: ``20000``
+- **Default**: ``true``
 
-请求超时的时长。
+当 ``defer`` 属性不为 ``true`` 时，将在组件挂载后等待此属性为 Truthy 值时延迟发送请求。
 
-### defer
+**defer**
 
 - **Type**: ``boolean``
 
@@ -65,15 +94,15 @@ const { error, pending, summary, fetchAbstract } = useAbstract(abstractOptions);
 
 如果为 ``true``，则不会在组件挂载完毕后立即发送请求。
 
-### waitFor
+**timeout**
 
-- **Type**: ``boolean``
+- **Type**: ``number``
 
-- **Default**: ``true``
+- **Default**: ``20000``
 
-当 ``defer`` 属性不为 ``true`` 时，将在组件挂载后等待此属性为 Truthy 值时延迟发送请求。
+请求超时的时长。
 
-### wordLimit
+**wordLimit**
 
 - **Type**: ``number``
 
@@ -81,10 +110,49 @@ const { error, pending, summary, fetchAbstract } = useAbstract(abstractOptions);
 
 文章提交的字数限制。
 
-### tianliKey
+**tianliKey**
 
 - **Type**: ``number``
 
 - **Required**
 
 TianliGPT 的请求密钥。
+
+### useTyping
+
+使用打字特效。
+
+```ts
+export declare function useTyping(text: MaybeRefOrGetter<string>, options?: UseTypingOptions): {
+    isTyping: Ref<boolean>,
+    typedText: Ref<string>,
+    run: () => void,
+    stop: () => void
+}
+```
+
+#### UseTypingOptions
+
+**speed**
+
+- **Type**: ``number``
+
+- **Default**: ``40``
+
+每秒输出的字数。
+
+**punctuation**
+
+- **Type**: ``Regexp``
+
+- **Default**: ``/[,.!?:;，。、！？：；]/``
+
+判断是否为标点的正则表达式。
+
+**punctuationSpeedMultiplier**
+
+- **Type**: ``number``
+
+- **Default**: ``6``
+
+当最后一个输出的字符被判断为标点时，输出下一个字符的延时倍率。

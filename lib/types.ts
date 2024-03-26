@@ -1,19 +1,27 @@
 import type { MaybeRefOrGetter } from "vue";
 
-export interface AbstractOptions {
-    target?: MaybeRefOrGetter<HTMLElement | string>,
-    content?: MaybeRefOrGetter<string>,
-    timeout?: MaybeRefOrGetter<number>,
-    wordLimit?: MaybeRefOrGetter<number>,
-    tianliKey: MaybeRefOrGetter<string>
-}
-
-export interface AbstractProps {
+export interface AbstractLessProps {
     target?: HTMLElement | string,
     content?: string,
-    timeout?: number,
-    defer?: boolean,
     waitFor?: boolean,
+    defer?: boolean,
+    timeout?: number,
     wordLimit?: number,
     tianliKey: string
+}
+
+export interface UseAbstractOptions {
+    target?: MaybeRefOrGetter<HTMLElement | string>,
+    content?: MaybeRefOrGetter<string>,
+    waitFor?: MaybeRefOrGetter<boolean>,
+    defer?: boolean,
+    timeout?: number,
+    wordLimit?: number,
+    tianliKey: string
+}
+
+export interface UseTypingOptions {
+    speed?: number,
+    punctuation?: RegExp,
+    punctuationSpeedMultiplier?: number
 }

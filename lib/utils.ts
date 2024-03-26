@@ -1,7 +1,8 @@
-import { ref, toValue } from "vue";
-import type { AbstractOptions } from "./types";
+import { ref, toValue, onMounted, MaybeRefOrGetter } from "vue";
+import { promiseTimeout, until } from "@vueuse/core";
+import type { UseAbstractOptions, UseTypingOptions } from "./types";
 
-export function useAbstract(options: AbstractOptions) {
+export function useAbstract(options: UseAbstractOptions = {}) {
     const error = ref(null);
     const pending = ref(false);
     const summary = ref("");
@@ -9,7 +10,7 @@ export function useAbstract(options: AbstractOptions) {
     function buildContent() {
         const target = toValue(options.target);
         const content = toValue(options.content);
-        const wordLimit = toValue(options.wordLimit) ?? 1000;
+        const wordLimit = options.wordLimit ?? 1000;
 
         let text = content;
         if (!content && target) {
@@ -38,8 +39,10 @@ export function useAbstract(options: AbstractOptions) {
             error.value = null;
             pending.value = true;
 
-            const timeout = toValue(options.timeout) ?? 20000;
-            const tianliKey = toValue(options.tianliKey);
+            const {
+                timeout = 20000,
+                tianliKey
+            } = options;
 
             const content = buildContent();
             if (content.length === 0) {
@@ -96,6 +99,11 @@ export function useAbstract(options: AbstractOptions) {
         }
     }
 
+    !options.defer && onMounted(async () => {
+        await until(options.waitFor ?? true).toBeTruthy();
+        fetchAbstract();
+    });
+
     return {
         error,
         pending,
@@ -103,3 +111,42 @@ export function useAbstract(options: AbstractOptions) {
         fetchAbstract
     };
 }
+
+export function useTyping(text: MaybeRefOrGetter<string>, options: UseTypingOptions = {}) {
+    const isTyping = ref(false);
+    const typedText = ref("");
+
+    async function run() {
+        //开始打字
+        isTyping.value = true;
+
+        const raw = toValue(text);
+        const {
+            speed = 40,
+            punctuation = /[,.!?:;，。、！？：；]/,
+            punctuationSpeedMultiplier = 6
+        } = options;
+
+        for (let i = 0; i < raw.length && isTyping.value; i++) {
+            typedText.value = raw.slice(0, i + 1);
+            const isPunctuation = punctuation.test(raw[i]);
+            const delay = 1000 / speed * (isPunctuation ? 6 : 1);
+            await promiseTimeout(delay);
+        }
+
+        //结束打字
+        isTyping.value = false;
+    }
+
+    function stop() {
+        isTyping.value = false;
+    }
+
+    return {
+        isTyping,
+        typedText,
+        run,
+        stop
+    };
+}
+
