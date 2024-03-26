@@ -36,6 +36,7 @@ const { error, pending, summary, fetchAbstract } = useAbstract(abstractOptions);
 ```vue
 <script lang="ts" setup>
     import { AbstractMore } from "abstractless";
+    import "abstractless/dist/style.css";
 
     const abstractProps = { /* 一些配置 */ };
 </script>
