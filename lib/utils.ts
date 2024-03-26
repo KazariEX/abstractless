@@ -130,7 +130,7 @@ export function useTyping(text: MaybeRefOrGetter<string>, options: UseTypingOpti
         for (let i = 0; i < raw.length && isTyping.value; i++) {
             typedText.value = raw.slice(0, i + 1);
             const isPunctuation = punctuation.test(raw[i]);
-            const delay = 1000 / speed * (isPunctuation ? 6 : 1);
+            const delay = 1000 / speed * (isPunctuation ? punctuationSpeedMultiplier : 1);
             await promiseTimeout(delay);
         }
 
