@@ -11,20 +11,14 @@ export function useAbstract(options: AbstractOptions) {
         const content = toValue(options.content);
         const wordLimit = toValue(options.wordLimit) ?? 1000;
 
-        if (content) {
-            return content;
-        }
-        else if (!target) {
-            return "";
-        }
-
+        let text = content;
+        if (!content && target) {
         const container = (typeof target === "string") ? document.querySelector(target) : target;
         if (!container) return "";
 
-        let text = "";
         const title = document.title;
-        const headings = document.querySelectorAll("h1, h2, h3, h4, h5");
-        const paragraphs = document.querySelectorAll("p");
+            const headings = container.querySelectorAll("h1, h2, h3, h4, h5");
+            const paragraphs = container.querySelectorAll("p");
 
         for (const h of headings) {
             text += h.textContent + " ";
@@ -33,10 +27,9 @@ export function useAbstract(options: AbstractOptions) {
         for (const p of paragraphs) {
             text += p.textContent.replaceAll(/https?:\/\/[^\s]+/g, "");
         }
-
-        const combinedText = title + " " + text;
-        const truncatedText = combinedText.slice(0, wordLimit);
-        return truncatedText;
+            text = title + " " + text;
+        }
+        return text.slice(0, wordLimit);
     }
 
     async function fetchAbstract() {
