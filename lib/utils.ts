@@ -3,7 +3,7 @@ import { promiseTimeout, until } from "@vueuse/core";
 import type { UseAbstractOptions, UseTypingOptions } from "./types";
 
 export function useAbstract(options: UseAbstractOptions = {}) {
-    const error = ref(null);
+    const error = ref<Error>(null);
     const pending = ref(false);
     const summary = ref("");
 

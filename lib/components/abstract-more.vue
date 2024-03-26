@@ -23,18 +23,22 @@
         tianliKey: props.tianliKey
     });
 
-    const { isTyping, typedText, run, stop } = useTyping(summary);
+    //即将显示的文本
+    const preparedText = computed(() => {
+        return error.value?.message ?? summary.value;
+    });
 
+    //使用打字特效
+    const { isTyping, typedText, run, stop } = useTyping(preparedText);
+
+    //实际显示的文本
     const displayText = computed(() => {
-        return pending.value ? "生成中..." : props.typingEffect ? typedText.value : summary.value;
+        return pending.value ? "生成中..." : props.typingEffect ? typedText.value : preparedText.value;
     });
 
     watch(pending, () => {
         if (pending.value) {
             stop();
-        }
-        else if (error.value) {
-
         }
         else if (props.typingEffect) {
             run();
