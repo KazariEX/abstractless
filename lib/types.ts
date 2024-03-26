@@ -1,4 +1,4 @@
-import { MaybeRefOrGetter } from "vue"
+import type { MaybeRefOrGetter } from "vue";
 
 export interface AbstractOptions {
     target?: MaybeRefOrGetter<HTMLElement | string>,
