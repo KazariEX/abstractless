@@ -53,6 +53,7 @@ export function useAbstract(options: UseAbstractOptions = {}) {
             for (const [key, value] of Object.entries({
                 key: tianliKey,
                 title: document.title,
+                url: location.href,
                 content
             })) {
                 url.searchParams.append(key, value);
